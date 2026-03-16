@@ -1,0 +1,37 @@
+﻿# REQUIRES-PROPERTIES-FILE - # Do not remove this comment!
+CREATE OR REPLACE WRAPPER JDBC customers
+    DATASOURCENAME=sqlserver
+    CATALOGNAME='${databases.work.views.jdbc.customers.CATALOGNAME}' 
+    SCHEMANAME='${databases.work.views.jdbc.customers.SCHEMANAME}' 
+    RELATIONNAME='Customers' 
+    OUTPUTSCHEMA (
+        customerid = 'CustomerID' :'java.lang.Integer' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='10', sourcetypeid='4', sourcetypename='int')  NOT NULL SORTABLE,
+        firstname = 'FirstName' :'java.lang.String' (OPT) (sourcetypesize='50', sourcetypeid='-9', sourcetypename='nvarchar')  SORTABLE,
+        lastname = 'LastName' :'java.lang.String' (OPT) (sourcetypesize='50', sourcetypeid='-9', sourcetypename='nvarchar')  SORTABLE,
+        email = 'Email' :'java.lang.String' (OPT) (sourcetypesize='100', sourcetypeid='-9', sourcetypename='nvarchar')  SORTABLE
+    )
+    CONSTRAINT 'PK__Customer__A4AE64B8DA5333CE' PRIMARY KEY ( 'CustomerID' )
+    INDEX 'PK__Customer__A4AE64B8DA5333CE' CLUSTER UNIQUE PRIMARY ( 'CustomerID' );
+
+CREATE OR REPLACE TABLE customers I18N us_pst (
+        customerid:int (notnull, sourcetypeid = '4', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '10'),
+        firstname:text (sourcetypeid = '-9', sourcetypesize = '50'),
+        lastname:text (sourcetypeid = '-9', sourcetypesize = '50'),
+        email:text (sourcetypeid = '-9', sourcetypesize = '100')
+    )
+    CONSTRAINT 'PK__Customer__A4AE64B8DA5333CE' PRIMARY KEY ( 'customerid' )
+    CACHE OFF
+    TIMETOLIVEINCACHE DEFAULT
+    ADD SEARCHMETHOD customers(
+        I18N us_pst
+        CONSTRAINTS (
+             ADD customerid (any) OPT ANY
+             ADD firstname (any) OPT ANY
+             ADD lastname (any) OPT ANY
+             ADD email (any) OPT ANY
+        )
+        OUTPUTLIST (customerid, email, firstname, lastname
+        )
+        WRAPPER (jdbc customers)
+    );
+
