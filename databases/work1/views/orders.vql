@@ -1,0 +1,39 @@
+﻿# REQUIRES-PROPERTIES-FILE - # Do not remove this comment!
+CREATE OR REPLACE WRAPPER JDBC orders
+    DATASOURCENAME=sqlserver
+    CATALOGNAME='${databases.work1.views.jdbc.orders.CATALOGNAME}' 
+    SCHEMANAME='${databases.work1.views.jdbc.orders.SCHEMANAME}' 
+    RELATIONNAME='Orders' 
+    OUTPUTSCHEMA (
+        orderid = 'OrderID' :'java.lang.Integer' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='10', sourcetypeid='4', sourcetypename='int')  NOT NULL SORTABLE,
+        customerid = 'CustomerID' :'java.lang.Integer' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='10', sourcetypeid='4', sourcetypename='int')  SORTABLE,
+        orderdate = 'OrderDate' :'java.time.LocalDate' (OPT) (sourcetypedecimals='0', sourcetypesize='10', sourcetypeid='91', sourcetypename='date')  SORTABLE,
+        amount = 'Amount' :'java.math.BigDecimal' (OPT) (sourcetypedecimals='2', sourcetyperadix='10', sourcetypesize='10', sourcetypeid='3', sourcetypename='decimal')  SORTABLE
+    )
+    CONSTRAINT 'PK__Orders__C3905BAF730B7041' PRIMARY KEY ( 'OrderID' )
+    CONSTRAINT 'FK__Orders__Customer__267ABA7A' FOREIGN KEY ( 'CustomerID' ) 
+    REFERENCES 'denodo'.'dbo'.'Customers'( 'CustomerID' )  ON UPDATE NO ACTION  ON DELETE NO ACTION NOT DEFERRABLE 
+    INDEX 'PK__Orders__C3905BAF730B7041' CLUSTER UNIQUE PRIMARY ( 'OrderID' );
+
+CREATE OR REPLACE TABLE orders I18N us_pst (
+        orderid:int (notnull, sourcetypeid = '4', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '10'),
+        customerid:int (sourcetypeid = '4', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '10'),
+        orderdate:localdate (sourcetypeid = '91', sourcetypedecimals = '0', sourcetypesize = '10'),
+        amount:decimal (sourcetypeid = '3', sourcetyperadix = '10', sourcetypedecimals = '2', sourcetypesize = '10')
+    )
+    CONSTRAINT 'PK__Orders__C3905BAF730B7041' PRIMARY KEY ( 'orderid' )
+    CACHE OFF
+    TIMETOLIVEINCACHE DEFAULT
+    ADD SEARCHMETHOD orders(
+        I18N us_pst
+        CONSTRAINTS (
+             ADD orderid (any) OPT ANY
+             ADD customerid (any) OPT ANY
+             ADD orderdate (any) OPT ANY
+             ADD amount (any) OPT ANY
+        )
+        OUTPUTLIST (amount, customerid, orderdate, orderid
+        )
+        WRAPPER (jdbc orders)
+    );
+
