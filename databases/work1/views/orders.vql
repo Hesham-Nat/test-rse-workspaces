@@ -21,6 +21,7 @@ CREATE OR REPLACE TABLE orders I18N us_pst (
         orderdate:localdate (sourcetypeid = '91', sourcetypedecimals = '0', sourcetypesize = '10'),
         amount:decimal (sourcetypeid = '3', sourcetyperadix = '10', sourcetypedecimals = '2', sourcetypesize = '10')
     )
+    DESCRIPTION = 'test'
     CONSTRAINT 'PK__Orders__C3905BAF730B7041' PRIMARY KEY ( 'orderid' )
     CACHE OFF
     TIMETOLIVEINCACHE DEFAULT
