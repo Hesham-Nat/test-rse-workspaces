@@ -1,0 +1,8 @@
+﻿CREATE OR REPLACE VIEW p_orders (
+    customerid (description = 'test')
+ )
+ AS SELECT orders.orderid AS orderid, orders.customerid AS customerid, orders.orderdate AS orderdate, orders.amount AS amount FROM orders;
+
+ALTER VIEW p_orders
+ LAYOUT (orders = [433, 88, 200, 200]);
+
